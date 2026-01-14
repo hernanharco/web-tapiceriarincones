@@ -7,7 +7,6 @@ import HTMLFlipBook from 'react-pageflip';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, MessageCircle, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import Image from 'next/image';
 
 // Forzamos el tipo para el componente FlipBook ya que sus tipos de @types suelen fallar
 const FlipBook = HTMLFlipBook as any;
@@ -53,12 +52,9 @@ export function Projects({ data }: { data?: any }) {
     }());
   };
 
-  // Detectar cuando se llega a la última página (Contraportada) corregido para doble página
+  // Detectar cuando se llega a la última página (Contraportada)
   const onFlip = useCallback((e: any) => {
-    // Cálculo: 1 (Portada) + (Número de proyectos * 2) + 1 (Contraportada)
-    // El índice e.data empieza en 0, por lo que restamos 1 al total
-    const totalPages = (projectsList.length * 2) + 2; 
-    
+    const totalPages = projectsList.length + 2; // + Portada y Contraportada
     if (e.data === totalPages - 1) {
       fireConfetti();
     }
@@ -129,51 +125,43 @@ export function Projects({ data }: { data?: any }) {
                 </div>
               </div>
               
-              {/* DOBLE PÁGINA POR PROYECTO */}
-              {projectsList.map((project: any, index: number) => [
-                /* PÁGINA IZQUIERDA: EL ANTES */
-                <div key={`before-${index}`} className="bg-white p-8 border-r shadow-inner page" data-density="soft">
-                  <div className="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-black/5 to-transparent z-10" />
+              {/* PÁGINAS DE PROYECTOS */}
+              {projectsList.map((project: any, index: number) => (
+                <div key={project.id || index} className="bg-card p-6 md:p-12 shadow-inner border-l page">
                   <div className="flex flex-col h-full">
-                    <h3 className="text-xl font-bold text-primary mb-4 italic text-center uppercase tracking-widest">
-                      {project.title} <span className="text-muted-foreground block text-xs mt-1">(Estado Inicial)</span>
-                    </h3>
-                    <div className="flex-grow relative rounded-lg overflow-hidden border-2 border-slate-100">
-                      <Image 
-                        src={project.beforeImage} 
-                        alt="Antes" 
-                        fill 
-                        className="object-cover"
-                        sizes="500px"
-                      />
-                      <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 text-xs font-bold rounded">ANTES</div>
+                    <div className="mb-6 flex items-center justify-between">
+                       <span className="h-[1px] flex-grow bg-border"></span>
+                       <h3 className="px-4 text-xl font-bold text-center text-primary uppercase tracking-widest italic">
+                        {project.title || `Proyecto ${index + 1}`}
+                      </h3>
+                      <span className="h-[1px] flex-grow bg-border"></span>
                     </div>
-                    <p className="mt-4 text-[10px] text-center text-muted-foreground uppercase tracking-[0.3em]">Hoja {index * 2 + 1}</p>
-                  </div>
-                </div>,
+                    
+                    <div className="flex-grow flex items-center justify-center bg-muted/20 rounded-xl overflow-hidden border-4 border-white shadow-md relative group">
+                      {project.beforeImage && project.afterImage ? (
+                        <div className="w-full h-full scale-[1.01]">
+                          <BeforeAfterSlider 
+                            before={project.beforeImage} 
+                            after={project.afterImage} 
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-3">
+                           <div className="w-12 h-12 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+                           <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">Cargando Restauración...</p>
+                        </div>
+                      )}
+                    </div>
 
-                /* PÁGINA DERECHA: EL DESPUÉS */
-                <div key={`after-${index}`} className="bg-white p-8 border-l shadow-inner page" data-density="soft">
-                   {/* Sombra del lomo central */}
-                  <div className="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-black/10 to-transparent z-10" />
-                  <div className="flex flex-col h-full">
-                    <h3 className="text-xl font-bold text-primary mb-4 italic text-center uppercase tracking-widest">
-                      {project.title} <span className="text-green-600 block text-xs mt-1">(Resultado Final)</span>
-                    </h3>
-                    <div className="flex-grow relative rounded-lg overflow-hidden border-2 border-slate-100">
-                      <Image 
-                        src={project.afterImage} 
-                        alt="Después" 
-                        fill 
-                        className="object-cover"
-                        sizes="500px"
-                      />
-                      <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 text-xs font-bold rounded">DESPUÉS</div>
+                    <div className="mt-8 flex justify-between items-center text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em]">
+                      <span className="opacity-50 tracking-normal">#TapiceríaProfesional</span>
+                      <span className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-sm">
+                        Hoja {index + 1}
+                      </span>
                     </div>
-                    <p className="mt-4 text-[10px] text-center text-muted-foreground uppercase tracking-[0.3em]">Hoja {index * 2 + 2}</p>
                   </div>
                 </div>
-              ])}
+              ))}
 
               {/* CONTRAPORTADA (CTA) */}
               <div className="flex items-center justify-center bg-slate-950 text-white shadow-2xl page">

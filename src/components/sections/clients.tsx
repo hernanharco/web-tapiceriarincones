@@ -1,6 +1,9 @@
+'use client';
+
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Home, Building2, Ruler } from 'lucide-react';
 import { clientTypes } from '@/lib/data/clients';
+import { useEffect } from 'react';
 
 const iconMap = {
   Home: Home,
@@ -8,18 +11,69 @@ const iconMap = {
   Ruler: Ruler,
 };
 
-export function Clients() {
+interface ClientsData {
+  title?: string;
+  subtitle?: string;
+  clientTypes?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    icon: string;
+  }>;
+  content?: {
+    title?: string;
+    subtitle?: string;
+    clientTypes?: Array<{
+      id: string;
+      title: string;
+      description: string;
+      icon: string;
+    }>;
+  };
+}
+
+interface ClientsProps {
+  data?: ClientsData;
+}
+
+const DEFAULT_DATA: ClientsData = {
+  title: "¿Para Quién Trabajamos?",
+  subtitle: "En Tapicería Rincón ofrecemos soluciones tanto para hogares como para negocios. Nuestra calidad artesanal es valorada por:"
+};
+
+export function Clients({ data }: ClientsProps) {
+  const source = data?.content || data;
+  const { title, subtitle } = { ...DEFAULT_DATA, ...source };
+  const clientsList = source?.clientTypes || clientTypes;
+
+  useEffect(() => {
+    const channel = new BroadcastChannel('site_update');
+    
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data === 'refresh_home') {
+        window.location.reload();
+      }
+    };
+
+    channel.addEventListener('message', handleMessage);
+
+    return () => {
+      channel.removeEventListener('message', handleMessage);
+      channel.close();
+    };
+  }, []);
+
   return (
     <section id="clientes" className="bg-card">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">¿Para Quién Trabajamos?</h2>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            En Tapicería Rincón ofrecemos soluciones tanto para hogares como para negocios. Nuestra calidad artesanal es valorada por:
+            {subtitle}
           </p>
         </div>
         <div className="mt-12 grid gap-8 sm:grid-cols-1 md:grid-cols-3">
-          {clientTypes.map((client) => {
+          {clientsList.map((client) => {
             const Icon = iconMap[client.icon as keyof typeof iconMap];
             return (
               <Card key={client.title} className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow rounded-lg">

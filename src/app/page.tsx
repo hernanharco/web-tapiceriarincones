@@ -26,20 +26,19 @@ export default async function Home() {
   // 3. Llamamos a los datos de cada sección
   const heroData = await getSectionData('hero');
   const aboutData = await getSectionData('about');
+  const projectsData = await getSectionData('projects');
+  const clientsData = await getSectionData('clients');
+  const reviewsData = await getSectionData('reviews');
   const contactData = await getSectionData('contact');
-  // Puedes añadir más aquí según los vayas creando en el admin
 
   return (
     <>
       {/* 4. Pasamos los datos a los componentes */}
       <Hero data={heroData} />
       <About data={aboutData} />
-      
-      {/* Estas secciones las dejamos así por ahora o les pasas sus datos si ya existen */}
-      <Projects />
-      <Clients />
-      <Reviews />
-      
+      <Projects data={projectsData} />
+      <Clients data={clientsData} />
+      <Reviews data={reviewsData} />
       <Contact data={contactData} />
     </>
   );

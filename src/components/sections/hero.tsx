@@ -1,14 +1,16 @@
+'use client';
+
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Eye, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 // Buscamos la imagen de fondo por defecto
 const heroImage = PlaceHolderImages.find(img => img.id === 'hero-background');
 
 interface HeroData {
-  
   mainTitle?: string;
   subtitle?: string;
   whatsappLink?: string;
@@ -29,7 +31,7 @@ interface HeroProps {
   data?: HeroData;
 }
 
-const DEFAULT_DATA = {
+const DEFAULT_DATA: HeroData = {
   mainTitle: "Tapicería Rincón: El Arte de Restaurar Tus Muebles con Tradición.",
   subtitle: "Más de 40 años de experiencia familiar, desde Colombia hasta Avilés, devolviendo la vida a tus sofás, sillas y tesoros.",
   whatsappLink: 'https://wa.me/34000000000?text=Hola%20Tapicería%20Rincón,%20me%20gustaría%20pedir%20presupuesto%20para%20un%20trabajo%20de%20tapicería.',
@@ -53,6 +55,23 @@ export function Hero({ data }: HeroProps) {
     buttonText2: source?.buttonText2 || DEFAULT_DATA.buttonText2,
   };
 
+  useEffect(() => {
+    const channel = new BroadcastChannel('site_update');
+    
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data === 'refresh_home') {
+        window.location.reload();
+      }
+    };
+
+    channel.addEventListener('message', handleMessage);
+
+    return () => {
+      channel.removeEventListener('message', handleMessage);
+      channel.close();
+    };
+  }, []);
+  
   return (
     <section id="inicio" className="relative w-full h-[80vh] min-h-[500px] flex items-center justify-center text-center text-white p-0">
       {/* Imagen de fondo */}

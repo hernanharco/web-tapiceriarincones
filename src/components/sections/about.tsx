@@ -1,6 +1,9 @@
+'use client';
+
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useEffect } from 'react';
 
 const teamImage = PlaceHolderImages.find(img => img.id === 'about-us-team');
 
@@ -26,6 +29,14 @@ interface AboutData {
   historyStartYear?: number;
   spainEstablishmentYear?: number;
   location?: string;
+  content?: {
+    title?: string;
+    paragraphs?: string[];
+    teamImage?: string;
+    historyStartYear?: number;
+    spainEstablishmentYear?: number;
+    location?: string;
+  };
 }
 
 interface AboutProps {
@@ -40,8 +51,26 @@ const DEFAULT_DATA: AboutData = {
   ]
 };
 
-export function About({ data = DEFAULT_DATA }: AboutProps) {
-  const { title, paragraphs } = { ...DEFAULT_DATA, ...data };
+export function About({ data }: AboutProps) {
+  const source = data?.content || data;
+  const { title, paragraphs } = { ...DEFAULT_DATA, ...source };
+
+  useEffect(() => {
+    const channel = new BroadcastChannel('site_update');
+    
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data === 'refresh_home') {
+        window.location.reload();
+      }
+    };
+
+    channel.addEventListener('message', handleMessage);
+
+    return () => {
+      channel.removeEventListener('message', handleMessage);
+      channel.close();
+    };
+  }, []);
   
   return (
     <section id="sobre-nosotros" className="bg-card">
