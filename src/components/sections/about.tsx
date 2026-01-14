@@ -19,22 +19,42 @@ const SpainFlag = () => (
     </svg>
   );
 
-export function About() {
+interface AboutData {
+  title?: string;
+  paragraphs?: string[];
+  teamImage?: string;
+  historyStartYear?: number;
+  spainEstablishmentYear?: number;
+  location?: string;
+}
+
+interface AboutProps {
+  data?: AboutData;
+}
+
+const DEFAULT_DATA: AboutData = {
+  title: "De Tradición: Nuestra Historia",
+  paragraphs: [
+    "Somos una empresa familiar con una herencia en el arte de la tapicería que se remonta a <strong>1984 en Colombia</strong>. Llevamos la pasión y el conocimiento de generaciones en cada puntada.",
+    "Desde <strong>2001</strong>, establecimos nuestro taller en <strong>Avilés, Asturias</strong>, combinando las técnicas tradicionales que aprendimos con los mejores materiales y tendencias de España. 'Tapicería Rincón' es el puente entre la tradición colombiana y la calidad europea."
+  ]
+};
+
+export function About({ data = DEFAULT_DATA }: AboutProps) {
+  const { title, paragraphs } = { ...DEFAULT_DATA, ...data };
+  
   return (
     <section id="sobre-nosotros" className="bg-card">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">De Tradición: Nuestra Historia</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
             <div className="space-y-4 text-muted-foreground text-lg">
-              <p>
-                Somos una empresa familiar con una herencia en el arte de la tapicería que se remonta a <strong>1984 en Colombia</strong>. Llevamos la pasión y el conocimiento de generaciones en cada puntada.
-                <ColombiaFlag />
-              </p>
-              <p>
-                Desde <strong>2001</strong>, establecimos nuestro taller en <strong>Avilés, Asturias</strong>, combinando las técnicas tradicionales que aprendimos con los mejores materiales y tendencias de España. 'Tapicería Rincón' es el puente entre la tradición colombiana y la calidad europea.
-                <SpainFlag />
-              </p>
+              {paragraphs?.map((paragraph, index) => (
+                <p key={index} dangerouslySetInnerHTML={{ __html: paragraph }} />
+              ))}
+              {paragraphs?.[0]?.includes('1984') && <ColombiaFlag />}
+              {paragraphs?.[1]?.includes('2001') && <SpainFlag />}
             </div>
           </div>
           <div>
