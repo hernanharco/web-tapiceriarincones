@@ -12,7 +12,8 @@ import Image from 'next/image';
 // Forzamos el tipo para el componente FlipBook ya que sus tipos de @types suelen fallar
 const FlipBook = HTMLFlipBook as any;
 
-export function Projects({ data }: { data?: any }) {
+// Añadimos globalWhatsapp a la desestructuración de las props
+export function Projects({ data, globalWhatsapp }: { data?: any; globalWhatsapp?: string }) {
   // 1. Prioridad a datos dinámicos de MongoDB/Neon
   const dynamicProjects = data?.content?.projects || data?.projects;  
   const projectsList = (dynamicProjects && dynamicProjects.length > 0) 
@@ -23,6 +24,9 @@ export function Projects({ data }: { data?: any }) {
   const title = data?.content?.title || data?.title || "Transformamos lo Antiguo en Nuevo";
   const subtitle = data?.content?.subtitle || data?.subtitle || "Nuestro trabajo habla por nosotros. Hojea nuestro catálogo para ver la magia.";
   const catalogTitle = data?.content?.catalogTitle || data?.catalogTitle || "Catálogo de Proyectos";
+
+  // Determinamos el link final de WhatsApp
+  const finalWhatsappLink = globalWhatsapp || data?.content?.whatsappLink || 'https://wa.me/34000000000';
 
   const bookRef = useRef<any>(null);
 
@@ -187,7 +191,7 @@ export function Projects({ data }: { data?: any }) {
                     </p>
                     
                     <Button 
-                      onClick={() => window.open('https://wa.me/tu_numero_aqui', '_blank')}
+                      onClick={() => window.open(finalWhatsappLink, '_blank')}
                       className="bg-green-600 hover:bg-green-500 text-white font-bold gap-3 py-7 px-10 rounded-full shadow-[0_0_20px_rgba(22,163,74,0.4)] transition-all hover:scale-105 active:scale-95"
                     >
                       <MessageCircle className="h-6 w-6" />
@@ -196,7 +200,7 @@ export function Projects({ data }: { data?: any }) {
 
                     <div className="mt-12 flex flex-col items-center gap-2">
                        <div className="flex gap-1">
-                          {[1,2,3,4,5].map(s => <span key={s} className="text-accent text-lg">★</span>)}
+                          {[1,2,3,4,5].map(s => <span key={s} className="text-accent text-lg" >★</span>)}
                        </div>
                        <p className="text-[10px] text-slate-500 uppercase tracking-[0.3em]">Calidad Artesanal 5 Estrellas</p>
                     </div>
