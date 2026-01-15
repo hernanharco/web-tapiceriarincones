@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useEffect } from 'react';
 
-const teamImage = PlaceHolderImages.find(img => img.id === 'about-us-team');
+const teamImagePlaceholder = PlaceHolderImages.find(img => img.id === 'about-us-team');
 
 const ColombiaFlag = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" className="w-6 h-auto rounded-sm ml-2 inline-block">
@@ -25,17 +25,11 @@ const SpainFlag = () => (
 interface AboutData {
   title?: string;
   paragraphs?: string[];
-  teamImage?: string;
-  historyStartYear?: number;
-  spainEstablishmentYear?: number;
-  location?: string;
+  aboutImage?: string; // Aseguramos que la propiedad exista en el tipado
   content?: {
     title?: string;
     paragraphs?: string[];
-    teamImage?: string;
-    historyStartYear?: number;
-    spainEstablishmentYear?: number;
-    location?: string;
+    aboutImage?: string;
   };
 }
 
@@ -53,7 +47,12 @@ const DEFAULT_DATA: AboutData = {
 
 export function About({ data }: AboutProps) {
   const source = data?.content || data;
-  const { title, paragraphs } = { ...DEFAULT_DATA, ...source };
+  
+  // Extraemos title, paragraphs y la nueva aboutImage del source (BD)
+  // Si no existen, tomará los de DEFAULT_DATA o el placeholder
+  const title = source?.title || DEFAULT_DATA.title;
+  const paragraphs = source?.paragraphs || DEFAULT_DATA.paragraphs;
+  const displayImage = source?.aboutImage || teamImagePlaceholder?.imageUrl;
 
   useEffect(() => {
     const channel = new BroadcastChannel('site_update');
@@ -73,7 +72,7 @@ export function About({ data }: AboutProps) {
   }, []);
   
   return (
-    <section id="sobre-nosotros" className="bg-card">
+    <section id="sobre-nosotros" className="bg-card py-16">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
@@ -82,20 +81,22 @@ export function About({ data }: AboutProps) {
               {paragraphs?.map((paragraph, index) => (
                 <p key={index} dangerouslySetInnerHTML={{ __html: paragraph }} />
               ))}
-              {paragraphs?.[0]?.includes('1984') && <ColombiaFlag />}
-              {paragraphs?.[1]?.includes('2001') && <SpainFlag />}
+              {/* Banderas dinámicas basadas en el contenido de los párrafos */}
+              {paragraphs?.some(p => p.includes('1984') || p.includes('Colombia')) && <ColombiaFlag />}
+              {paragraphs?.some(p => p.includes('2001') || p.includes('Avilés')) && <SpainFlag />}
             </div>
           </div>
           <div>
-            {teamImage && (
-              <Card className="overflow-hidden shadow-[-10px_10px_15px_-3px_rgba(0,0,0,0.2)] rounded-lg">
+            {/* Lógica de imagen mejorada para cargar desde Cloudinary */}
+            {displayImage && (
+              <Card className="overflow-hidden shadow-[-10px_10px_15px_-3px_rgba(0,0,0,0.2)] rounded-lg transition-transform hover:scale-[1.01] duration-300">
                 <Image
-                  src={teamImage.imageUrl}
-                  alt={teamImage.description}
+                  src={displayImage}
+                  alt={title || "Sobre Nosotros"}
                   width={800}
                   height={600}
-                  className="w-full h-auto object-cover aspect-[4/3] border border-black/20"
-                  data-ai-hint={teamImage.imageHint}
+                  className="w-full h-auto object-cover aspect-[4/3] border border-black/10"
+                  priority={false}
                 />
               </Card>
             )}

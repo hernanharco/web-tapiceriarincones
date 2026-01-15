@@ -24,11 +24,13 @@ interface HeroData {
     whatsappLink?: string;
     buttonText1?: string;
     buttonText2?: string;
+    backgroundImage?: string;
   };
 }
 
 interface HeroProps {
   data?: HeroData;
+  globalWhatsapp?: string;
 }
 
 const DEFAULT_DATA: HeroData = {
@@ -36,10 +38,12 @@ const DEFAULT_DATA: HeroData = {
   subtitle: "Más de 40 años de experiencia familiar, desde Colombia hasta Avilés, devolviendo la vida a tus sofás, sillas y tesoros.",
   whatsappLink: 'https://wa.me/34000000000?text=Hola%20Tapicería%20Rincón,%20me%20gustaría%20pedir%20presupuesto%20para%20un%20trabajo%20de%20tapicería.',
   buttonText1: "Ver Nuestros Trabajos",
-  buttonText2: "Contactar Ahora"
+  buttonText2: "Contactar Ahora",
+  backgroundImage: heroImage?.imageUrl
 };
 
-export function Hero({ data }: HeroProps) {
+export function Hero({ data, globalWhatsapp }: HeroProps) {  
+  
   // Lógica de Arquitecto: 
   // 1. Prioridad: data.content (lo que viene del Panel Admin/MongoDB)
   // 2. Segunda opción: data (si el objeto viene plano)
@@ -50,9 +54,11 @@ export function Hero({ data }: HeroProps) {
   const displayData = {
     mainTitle: source?.mainTitle || DEFAULT_DATA.mainTitle,
     subtitle: source?.subtitle || DEFAULT_DATA.subtitle,
-    whatsappLink: source?.whatsappLink || DEFAULT_DATA.whatsappLink,
+    whatsappLink: globalWhatsapp || source?.whatsappLink || DEFAULT_DATA.whatsappLink,
     buttonText1: source?.buttonText1 || DEFAULT_DATA.buttonText1,
     buttonText2: source?.buttonText2 || DEFAULT_DATA.buttonText2,
+    // AÑADIMOS ESTA LÍNEA PARA QUE TYPESCRIPT NO DE ERROR
+    backgroundImage: source?.backgroundImage || DEFAULT_DATA.backgroundImage, 
   };
 
   useEffect(() => {
@@ -74,15 +80,15 @@ export function Hero({ data }: HeroProps) {
   
   return (
     <section id="inicio" className="relative w-full h-[80vh] min-h-[500px] flex items-center justify-center text-center text-white p-0">
-      {/* Imagen de fondo */}
-      {heroImage && (
+      {/* Imagen de fondo Dinámica */}
+      {displayData.backgroundImage && (
         <Image
-          src={heroImage.imageUrl}
-          alt={heroImage.description}
+          src={displayData.backgroundImage}
+          alt="Tapicería Rincón Background"
           fill
-          className="object-cover"
+          className="object-cover transition-opacity duration-700"
           priority
-          data-ai-hint={heroImage.imageHint}
+          sizes="100vw"
         />
       )}
       

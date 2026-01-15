@@ -5,14 +5,15 @@ import { Clients } from '@/components/sections/clients';
 import { Reviews } from '@/components/sections/reviews';
 import { Contact } from '@/components/sections/contact';
 
-// 1. Función para obtener datos de la API
 async function getSectionData(id: string) {
   try {
-    // Usamos cache: 'no-store' para que Next.js no guarde una copia vieja
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002'}/api/sections/${id}`, {
-      cache: 'no-store'
-    });
-    
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002'}/api/sections/${id}`,
+      {
+        cache: 'no-store',
+      },
+    );
+
     if (!res.ok) return null;
     return await res.json();
   } catch (error) {
@@ -21,24 +22,37 @@ async function getSectionData(id: string) {
   }
 }
 
-// 2. Convertimos Home en una función async (Server Component)
 export default async function Home() {
-  // 3. Llamamos a los datos de cada sección
-  const heroData = await getSectionData('hero');
-  const aboutData = await getSectionData('about');
-  const projectsData = await getSectionData('projects');
-  const clientsData = await getSectionData('clients');
-  const reviewsData = await getSectionData('reviews');
-  const contactData = await getSectionData('contact');
+  // LÓGICA DE ARQUITECTO: Cargamos todas en paralelo para máxima velocidad
+  const [
+    heroData,
+    aboutData,
+    projectsData,
+    clientsData,
+    reviewsData,
+    contactData,
+  ] = await Promise.all([
+    getSectionData('hero'),
+    getSectionData('about'),
+    getSectionData('projects'),
+    getSectionData('clients'),
+    getSectionData('reviews'),
+    getSectionData('contact'),
+  ]);
+
+  // Extraemos el link de WhatsApp Global (del contacto)
+  const globalWhatsapp = contactData?.content?.whatsappLink;
 
   return (
     <>
-      {/* 4. Pasamos los datos a los componentes */}
-      <Hero data={heroData} />
+      {/* Pasamos el link global al Hero */}
+      <Hero data={heroData} globalWhatsapp={globalWhatsapp} />
+
       <About data={aboutData} />
-      <Projects data={projectsData} />
+      <Projects data={projectsData} globalWhatsapp={globalWhatsapp} />
       <Clients data={clientsData} />
       <Reviews data={reviewsData} />
+
       <Contact data={contactData} />
     </>
   );
