@@ -8,50 +8,44 @@ import { Footer } from '@/components/layout/footer';
 
 export const metadata: Metadata = {
   title: 'Tapicería Rincón - Avilés',
-  description: 'El Arte de Restaurar Tus Muebles con Tradición. Más de 40 años de experiencia familiar.',
-  keywords: 'tapicería, avilés, asturias, restauración, muebles',
+  description: 'El Arte de Restaurar Tus Muebles con Tradición.',
 };
 
-// Función única para obtener los datos de contacto y logo
+// Función para detectar la URL correcta en cualquier entorno
+function getBaseUrl() {
+  if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return 'http://localhost:9002';
+}
+
 async function getContactSection() {
-  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002').replace(/\/$/, '');
-  
+  const baseUrl = getBaseUrl().replace(/\/$/, '');
   try {
     const res = await fetch(`${baseUrl}/api/sections/contact`, {
-      cache: 'no-store'
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' }
     });
     if (!res.ok) return null;
     return await res.json();
   } catch (error) {
+    console.error("Error Layout Fetch:", error);
     return null;
   }
 }
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const contactData = await getContactSection();
-  const globalWhatsapp = contactData?.content?.whatsappLink;
-  const globalLogo = contactData?.content?.logoUrl;
+  
+  // Extracción robusta de datos
+  const source = contactData?.content || contactData;
+  const globalWhatsapp = source?.whatsappLink;
+  const globalLogo = source?.logoUrl;
 
   return (
     <html lang="es" className="scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
-      </head>
       <body className="antialiased font-sans flex flex-col min-h-screen">
         <Header globalWhatsapp={globalWhatsapp} globalLogo={globalLogo} />
-        
-        <main className="flex-1">
-          {children}
-        </main>
-        
-        {/* Pasamos también los datos al Footer para consistencia total */}
+        <main className="flex-1">{children}</main>
         <Footer contactData={contactData} />
         <Toaster />
       </body>
