@@ -14,14 +14,15 @@ export const metadata: Metadata = {
 
 // Función única para obtener los datos de contacto y logo
 async function getContactSection() {
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002').replace(/\/$/, '');
+  
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002'}/api/sections/contact`, {
+    const res = await fetch(`${baseUrl}/api/sections/contact`, {
       cache: 'no-store'
     });
     if (!res.ok) return null;
     return await res.json();
   } catch (error) {
-    console.error("Error obteniendo datos globales:", error);
     return null;
   }
 }
