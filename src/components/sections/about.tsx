@@ -46,7 +46,7 @@ const DEFAULT_DATA: AboutData = {
 };
 
 export function About({ data }: AboutProps) {
-  const source = data?.content || data;
+  const source = data?.content || {};
   
   // Extraemos title, paragraphs y la nueva aboutImage del source (BD)
   // Si no existen, tomará los de DEFAULT_DATA o el placeholder
