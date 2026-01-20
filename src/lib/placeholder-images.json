@@ -1,0 +1,64 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-background",
+      "description": "A background image of a beautifully finished piece of furniture in a workshop setting.",
+      "imageUrl": "https://images.unsplash.com/photo-1586533345963-34cb31b96c4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx1cGhvbHN0ZXJ5JTIwd29ya3Nob3B8ZW58MHx8fHwxNzYxMjA4MzI4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "upholstery workshop"
+    },
+    {
+      "id": "about-us-team",
+      "description": "A photo of the upholstery team working in their workshop.",
+      "imageUrl": "https://images.unsplash.com/photo-1667923006173-9e0d2251f608?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y3JhZnRzbWFuJTIwd29ya2luZ3xlbnwwfHx8fDE3NjEyMDgzMjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "craftsman working"
+    },
+    {
+      "id": "chester-before",
+      "description": "A worn-out chesterfield sofa before restoration.",
+      "imageUrl": "https://images.unsplash.com/photo-1668955254766-1bb2de25cf16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxvbGQlMjBzb2ZhfGVufDB8fHx8MTc2MTIwODMyOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "old sofa"
+    },
+    {
+      "id": "chester-after",
+      "description": "A beautifully restored chesterfield sofa.",
+      "imageUrl": "https://images.unsplash.com/photo-1698936061086-2bf99c7b9fc5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cmVzdG9yZWQlMjBzb2ZhfGVufDB8fHx8MTc2MTIwODMyOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "restored sofa"
+    },
+    {
+      "id": "chairs-before",
+      "description": "Old dining chairs with worn fabric.",
+      "imageUrl": "https://images.unsplash.com/photo-1737302537127-5bf5f8428f64?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvbGQlMjBjaGFpcnN8ZW58MHx8fHwxNzYxMjA4MzI4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "old chairs"
+    },
+    {
+      "id": "chairs-after",
+      "description": "Restored dining chairs with new fabric.",
+      "imageUrl": "https://images.unsplash.com/photo-1516681859000-292df1ed3e83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxuZXclMjBjaGFpcnN8ZW58MHx8fHwxNzYxMjA4MzI4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "new chairs"
+    },
+    {
+      "id": "armchair-before",
+      "description": "A classic armchair with faded upholstery.",
+      "imageUrl": "https://images.unsplash.com/photo-1567912992050-a1c88e0065ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvbGQlMjBhcm1jaGFpcnxlbnwwfHx8fDE3NjEyMDgzMjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "old armchair"
+    },
+    {
+      "id": "armchair-after",
+      "description": "A reupholstered classic armchair looking new.",
+      "imageUrl": "https://images.unsplash.com/photo-1660520203142-18dd95ec5a20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuZXclMjBhcm1jaGFpcnxlbnwwfHx8fDE3NjEyMDgzMjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "new armchair"
+    },
+    {
+      "id": "headboard-before",
+      "description": "A plain wall before adding a custom headboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1533035353720-f1c6a75cd8ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwbGFpbiUyMHdhbGx8ZW58MHx8fHwxNzY3NDkwOTAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "plain wall"
+    },
+    {
+      "id": "headboard-after",
+      "description": "A beautiful custom-made upholstered headboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1596495359199-a3d837a77e27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx1cGhvbHN0ZXJlZCUyMGhlYWRib2FyZHxlbnwwfHx8fDE3NjE3MzY2Njd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "upholstered headboard"
+    }
+  ]
+}
