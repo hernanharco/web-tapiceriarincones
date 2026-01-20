@@ -66,4 +66,8 @@ export default async function RootLayout({
       </body>
     </html>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a9d4d629583207f8d61136347cd2a570eaf34528

@@ -105,4 +105,8 @@ export function About({ data }: AboutProps) {
       </div>
     </section>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a9d4d629583207f8d61136347cd2a570eaf34528
