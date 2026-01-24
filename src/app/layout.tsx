@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { AuthProvider } from '@/context/AuthContext';
 
 // Importaciones para conexión directa a Base de Datos
 import connectDB from '@/lib/mongodb';
@@ -21,14 +22,14 @@ async function getContactSectionDirect() {
   try {
     await connectDB();
     // Consultamos directamente el modelo Section
-    const section = await Section.findOne({ 
+    const section = await Section.findOne({
       identifier: 'contact',
-      isActive: true 
+      isActive: true
     }).lean();
 
     if (!section) return null;
 
-    // Serializamos el objeto de MongoDB para evitar errores con tipos complexos (como ObjectIDs)
+    // Serializamos el objeto de MongoDB para evitar errores con tipos complexos
     return JSON.parse(JSON.stringify(section));
   } catch (error) {
     console.error("Error Layout Direct Fetch:", error);
@@ -42,7 +43,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const contactData = await getContactSectionDirect();
-  
+
   // Extracción robusta de datos para Header y Footer
   const source = contactData?.content || contactData;
   const globalWhatsapp = source?.whatsappLink;
@@ -50,24 +51,29 @@ export default async function RootLayout({
 
   return (
     <html lang="es" className="scroll-smooth">
-      <body className="antialiased font-sans flex flex-col min-h-screen">
-        <Header 
-          globalWhatsapp={globalWhatsapp} 
-          globalLogo={globalLogo} 
+      <head>
+        {/* Enlace para Material Symbols Outlined */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=door_open"
         />
-        
-        <main className="flex-1">
-          {children}
-        </main>
+      </head>
+      <body className="antialiased font-sans flex flex-col min-h-screen">
+        <AuthProvider>
+          <Header
+            globalWhatsapp={globalWhatsapp}
+            globalLogo={globalLogo}
+          />
 
-        <Footer contactData={contactData} />
-        
-        <Toaster />
+          <main className="flex-1">
+            {children}
+          </main>
+
+          <Footer contactData={contactData} />
+
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> a9d4d629583207f8d61136347cd2a570eaf34528
