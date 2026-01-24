@@ -37,6 +37,7 @@ export function Footer({ contactData }: FooterProps) {
             src={globalLogo}
             alt="Logo Tapicería Rincón"
             fill
+            sizes="(max-width: 768px) 100vw, 256px"
             className="object-contain object-left"
             priority
           />
