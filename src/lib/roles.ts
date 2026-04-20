@@ -41,3 +41,15 @@ export const hasPermission = (userRole: string | undefined, minRequiredRole: Use
   // 4. Lógica de umbral: Si el nivel del usuario es mayor o igual al requerido, tiene permiso
   return userLevel >= requiredLevel;
 };
+
+export function mapBackendRole(backendRole: string): string {
+  const map: Record<string, string> = {
+    'SUPERADMIN': 'SuperAdmin',
+    'ADMIN':      'Admin',
+    'MANAGER':    'Admin',   // Manager también puede acceder a /admin
+    'USER':       'Viewer',
+    'VIEWER':     'Viewer',
+    'NONE':       'Viewer',
+  };
+  return map[backendRole?.toUpperCase()] || 'Viewer';
+}

@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { mapBackendRole } from '@/lib/roles';
 
 interface User {
   name: string;
@@ -20,23 +21,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000/api';
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || '/api/v1';
 
   const loadProfile = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/perfil`, {
+      // ← CAMBIO 1: /perfil → /users/me
+      const response = await fetch(`${BACKEND_URL}/users/me`, {
         method: 'GET',
         credentials: 'include',
       });
+
       if (response.ok) {
+        // ← CAMBIO 2: FastAPI devuelve el usuario directamente, sin wrapper {success, user}
         const data = await response.json();
-        if (data.success && data.user) {
-          setUser({
-            name: data.user.email?.split('@')[0] || 'Usuario',
-            email: data.user.email || '',
-            role: data.user.role || 'Viewer'
-          });
-        }
+        setUser({
+          name: data.full_name || data.username || data.email?.split('@')[0] || 'Usuario',
+          email: data.email || '',
+          // ← CAMBIO 3: mapear ADMIN → Admin para que RBAC funcione
+          role: mapBackendRole(data.role),
+        });
       } else {
         setUser(null);
       }
@@ -49,7 +52,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch(`${BACKEND_URL}/logout`, { method: 'POST', credentials: 'include' });
+      // FastAPI usa POST /auth/logout
+      await fetch(`${BACKEND_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
       setUser(null);
     } catch (err) {
       console.error('Logout error', err);
@@ -67,7 +74,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Hook para usar el contexto fácilmente
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuth debe usarse dentro de un AuthProvider');
