@@ -4,26 +4,21 @@ import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { ImageIcon } from 'lucide-react';
-
-// Importamos el componente que ya te funciona en ProjectsEditor
 import { ImageUploader } from './ImageUploader';
+import type { SectionData, HeroContent } from '@/lib/content-types';
 
 interface HeroEditorProps {
-  data: any;
-  onChange: (newData: any) => void;
+  data: SectionData<'hero'>;
+  onChange: (newData: SectionData<'hero'>) => void;
 }
 
 export function HeroEditor({ data, onChange }: HeroEditorProps) {
-  
-  // Función centralizada para cambios en el contenido
-  const handleFieldChange = (field: string, value: any) => {
+  const content: HeroContent = data.content ?? {};
+
+  const handleFieldChange = (field: keyof HeroContent, value: any) => {
     onChange({
       ...data,
-      content: {
-        ...data.content,
-        [field]: value,
-      },
+      content: { ...content, [field]: value },
     });
   };
 
@@ -35,7 +30,7 @@ export function HeroEditor({ data, onChange }: HeroEditorProps) {
           <Label className="text-xs font-bold uppercase">Título Principal</Label>
           <Input
             className="text-lg font-bold"
-            value={data.content.mainTitle || ''}
+            value={content.mainTitle ?? ''}
             onChange={(e) => handleFieldChange('mainTitle', e.target.value)}
             placeholder="Ej: Expertos en Tapicería Artesanal"
           />
@@ -45,7 +40,7 @@ export function HeroEditor({ data, onChange }: HeroEditorProps) {
         <div>
           <Label className="text-xs font-bold uppercase">Subtítulo</Label>
           <Textarea
-            value={data.content.subtitle || ''}
+            value={content.subtitle ?? ''}
             onChange={(e) => handleFieldChange('subtitle', e.target.value)}
             rows={3}
             placeholder="Describe brevemente tu servicio..."
@@ -57,34 +52,45 @@ export function HeroEditor({ data, onChange }: HeroEditorProps) {
           <div className="space-y-2">
             <Label className="text-xs font-bold uppercase">Texto Botón Primario</Label>
             <Input
-              value={data.content.buttonText1 || ''}
+              value={content.buttonText1 ?? ''}
               onChange={(e) => handleFieldChange('buttonText1', e.target.value)}
             />
           </div>
           <div className="space-y-2">
             <Label className="text-xs font-bold uppercase">Texto Botón Secundario</Label>
             <Input
-              value={data.content.buttonText2 || ''}
+              value={content.buttonText2 ?? ''}
               onChange={(e) => handleFieldChange('buttonText2', e.target.value)}
             />
           </div>
         </div>
 
-        {/* GESTIÓN DE IMAGEN DE FONDO (Integrando el componente exitoso) */}
+        {/* GESTIÓN DE IMAGEN DE FONDO */}
         <div className="space-y-2">
           <Label className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
-            <ImageIcon className="h-4 w-4" /> Imagen de Fondo del Hero
+            <span className="material-symbols-outlined text-lg">image</span>
+            Imagen de Fondo del Hero
           </Label>
-          
-          <ImageUploader 
+
+          <ImageUploader
             label="Imagen Principal de Portada"
-            value={data.content.backgroundImage || ''}
+            value={content.backgroundImage ?? ''}
             onChange={(url) => handleFieldChange('backgroundImage', url)}
           />
-          
+
           <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-tighter">
             * Esta imagen se mostrará detrás de los textos principales.
           </p>
+        </div>
+
+        {/* WHATSAPP */}
+        <div>
+          <Label className="text-xs font-bold uppercase">Link de WhatsApp</Label>
+          <Input
+            value={content.whatsappLink ?? ''}
+            onChange={(e) => handleFieldChange('whatsappLink', e.target.value)}
+            placeholder="https://wa.me/34..."
+          />
         </div>
       </div>
     </div>

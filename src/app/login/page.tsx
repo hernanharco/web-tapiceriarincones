@@ -1,8 +1,13 @@
 // src/app/login/page.tsx
-// Esta clase se crea porque cada vez que habia un error este redirigía a /login
-// y no era lo que queríamos.
+// Página de login: redirige al backend de autenticación externo.
+// El backend maneja el login y redirige de vuelta con la cookie de sesión.
+
 import { redirect } from 'next/navigation';
+
 export default function LoginPage() {
-  // Forzamos que cualquier intento de ir a /login termine en la raíz
-  redirect('/'); 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || '/api/v1';
+  const returnUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002';
+
+  // Redirigir al login del backend con return URL
+  redirect(`${backendUrl}/auth/login?redirect=${encodeURIComponent(returnUrl)}`);
 }

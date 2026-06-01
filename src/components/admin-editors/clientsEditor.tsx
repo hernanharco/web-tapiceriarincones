@@ -6,56 +6,53 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Trash2, LayoutGrid, Info } from 'lucide-react';
+import { Plus, Trash2, LayoutGrid } from 'lucide-react';
 import { ImageUploader } from './ImageUploader';
+import type { SectionData, ClientsContent, ClientItem } from '@/lib/content-types';
 
 interface ClientsEditorProps {
-  data: any;
-  onChange: (newData: any) => void;
+  data: SectionData<'clients'>;
+  onChange: (newData: SectionData<'clients'>) => void;
 }
 
 export function ClientsEditor({ data, onChange }: ClientsEditorProps) {
-  // Extraemos la lista de items (servicios/clientes) del contenido
-  const items = data.content.items || [];
+  const content: ClientsContent = data.content ?? { items: [] };
+  const items: ClientItem[] = content.items ?? [];
 
-  // 1. Manejo de textos globales (Título/Subtítulo de la sección)
   const handleGlobalChange = (field: string, value: string) => {
     onChange({
       ...data,
-      content: { ...data.content, [field]: value }
+      content: { ...content, [field]: value },
     });
   };
 
-  // 2. Agregar un nuevo bloque de servicio
   const addItem = () => {
-    const newItem = { 
-      id: crypto.randomUUID(), 
-      title: 'Nuevo Servicio', 
-      subtitle: '', 
-      icon: '' 
+    const newItem: ClientItem = {
+      id: crypto.randomUUID(),
+      title: 'Nuevo Servicio',
+      subtitle: '',
+      icon: '',
     };
     onChange({
       ...data,
-      content: { ...data.content, items: [...items, newItem] }
+      content: { ...content, items: [...items, newItem] },
     });
   };
 
-  // 3. Actualizar un campo específico de un item
-  const updateItem = (index: number, field: string, value: string) => {
+  const updateItem = (index: number, field: keyof ClientItem, value: string) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
     onChange({
       ...data,
-      content: { ...data.content, items: newItems }
+      content: { ...content, items: newItems },
     });
   };
 
-  // 4. Eliminar un bloque
   const removeItem = (index: number) => {
-    const newItems = items.filter((_: any, i: number) => i !== index);
+    const newItems = items.filter((_, i) => i !== index);
     onChange({
       ...data,
-      content: { ...data.content, items: newItems }
+      content: { ...content, items: newItems },
     });
   };
 
@@ -76,16 +73,16 @@ export function ClientsEditor({ data, onChange }: ClientsEditorProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/30 p-4 rounded-lg border">
         <div className="space-y-2">
           <Label className="text-[10px] font-bold uppercase">Título de Sección</Label>
-          <Input 
-            value={data.content.title || ''} 
+          <Input
+            value={content.title ?? ''}
             onChange={(e) => handleGlobalChange('title', e.target.value)}
             placeholder="Ej: Nuestros Servicios"
           />
         </div>
         <div className="space-y-2">
           <Label className="text-[10px] font-bold uppercase">Subtítulo de Sección</Label>
-          <Input 
-            value={data.content.subtitle || ''} 
+          <Input
+            value={content.subtitle ?? ''}
             onChange={(e) => handleGlobalChange('subtitle', e.target.value)}
             placeholder="Breve descripción de la sección"
           />
@@ -94,12 +91,14 @@ export function ClientsEditor({ data, onChange }: ClientsEditorProps) {
 
       {/* LISTADO DINÁMICO DE TARJETAS */}
       <div className="grid grid-cols-1 gap-6 mt-4">
-        {items.map((item: any, index: number) => (
-          <Card key={item.id} className="relative group border-2 border-dashed hover:border-primary/50 transition-colors">
-            {/* Botón Eliminar */}
-            <Button 
-              variant="destructive" 
-              size="icon" 
+        {items.map((item: ClientItem, index: number) => (
+          <Card
+            key={item.id}
+            className="relative group border-2 border-dashed hover:border-primary/50 transition-colors"
+          >
+            <Button
+              variant="destructive"
+              size="icon"
               className="absolute -top-2 -right-2 h-8 w-8 rounded-full shadow-lg z-10 opacity-0 group-hover:opacity-100 transition-opacity"
               onClick={() => removeItem(index)}
             >
@@ -108,25 +107,22 @@ export function ClientsEditor({ data, onChange }: ClientsEditorProps) {
 
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                {/* COLUMNA 1: ICONO (Usando ImageUploader para el logo circular) */}
                 <div className="space-y-2">
                   <Label className="text-[10px] font-bold uppercase flex items-center gap-1">
-                    <Info className="h-3 w-3" /> Icono / Logo
+                    Icono / Logo
                   </Label>
-                  <ImageUploader 
+                  <ImageUploader
                     label="Subir Icono"
-                    value={item.icon || ''}
+                    value={item.icon ?? ''}
                     onChange={(url) => updateItem(index, 'icon', url)}
                   />
                 </div>
 
-                {/* COLUMNA 2 Y 3: TEXTOS */}
                 <div className="md:col-span-2 space-y-4">
                   <div className="space-y-2">
                     <Label className="text-[10px] font-bold uppercase">Título del Servicio</Label>
-                    <Input 
-                      value={item.title || ''}
+                    <Input
+                      value={item.title ?? ''}
                       onChange={(e) => updateItem(index, 'title', e.target.value)}
                       placeholder="Ej: Clientes Particulares"
                       className="font-bold text-lg"
@@ -134,8 +130,8 @@ export function ClientsEditor({ data, onChange }: ClientsEditorProps) {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-[10px] font-bold uppercase">Descripción / Subtítulo</Label>
-                    <Textarea 
-                      value={item.subtitle || ''}
+                    <Textarea
+                      value={item.subtitle ?? ''}
                       onChange={(e) => updateItem(index, 'subtitle', e.target.value)}
                       placeholder="Describe brevemente el servicio..."
                       rows={3}
@@ -143,7 +139,6 @@ export function ClientsEditor({ data, onChange }: ClientsEditorProps) {
                     />
                   </div>
                 </div>
-
               </div>
             </CardContent>
           </Card>
@@ -151,7 +146,9 @@ export function ClientsEditor({ data, onChange }: ClientsEditorProps) {
 
         {items.length === 0 && (
           <div className="text-center py-10 border-2 border-dashed rounded-lg bg-muted/10">
-            <p className="text-muted-foreground text-sm">No hay bloques creados. Haz clic en "Agregar Bloque" para empezar.</p>
+            <p className="text-muted-foreground text-sm">
+              No hay bloques creados. Haz clic en &quot;Agregar Bloque&quot; para empezar.
+            </p>
           </div>
         )}
       </div>

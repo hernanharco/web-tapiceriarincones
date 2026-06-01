@@ -4,25 +4,25 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { ImageUploader } from '@/components/admin-editors/ImageUploader'; // Asegúrate que la ruta sea correcta
-import { Card, CardContent } from '@/components/ui/card';
+import { ImageUploader } from '@/components/admin-editors/ImageUploader';
 import { Mail, Phone, MapPin, MessageSquare, Building2 } from 'lucide-react';
+import type { SectionData, ContactContent } from '@/lib/content-types';
 
 interface ContactEditorProps {
-  data: any;
-  onChange: (newData: any) => void;
+  data: SectionData<'contact'>;
+  onChange: (newData: SectionData<'contact'>) => void;
 }
 
 export function ContactEditor({ data, onChange }: ContactEditorProps) {
-  const content = data?.content || {};
+  const content: ContactContent = data.content ?? {};
 
-  const updateContent = (field: string, value: any) => {
+  const updateContent = <K extends keyof ContactContent>(
+    field: K,
+    value: ContactContent[K],
+  ) => {
     onChange({
       ...data,
-      content: {
-        ...content,
-        [field]: value
-      }
+      content: { ...content, [field]: value },
     });
   };
 
@@ -34,9 +34,9 @@ export function ContactEditor({ data, onChange }: ContactEditorProps) {
           <Building2 className="h-4 w-4" /> Logo de la Empresa
         </h3>
         <div className="max-w-sm mx-auto">
-          <ImageUploader 
+          <ImageUploader
             label="Logo Oficial"
-            value={content.logoUrl || ''}
+            value={content.logoUrl ?? ''}
             onChange={(url) => updateContent('logoUrl', url)}
           />
         </div>
@@ -48,12 +48,14 @@ export function ContactEditor({ data, onChange }: ContactEditorProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* TEXTOS PRINCIPALES */}
         <div className="space-y-4">
-          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest border-b pb-2">Textos de la Sección</h3>
+          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest border-b pb-2">
+            Textos de la Sección
+          </h3>
           <div>
             <Label htmlFor="contactTitle">Título Principal</Label>
             <Input
               id="contactTitle"
-              value={content.title || ''}
+              value={content.title ?? ''}
               onChange={(e) => updateContent('title', e.target.value)}
               placeholder="Ej: Hablemos de tu Proyecto"
             />
@@ -62,7 +64,7 @@ export function ContactEditor({ data, onChange }: ContactEditorProps) {
             <Label htmlFor="contactSubtitle">Subtítulo o Descripción</Label>
             <Textarea
               id="contactSubtitle"
-              value={content.subtitle || ''}
+              value={content.subtitle ?? ''}
               onChange={(e) => updateContent('subtitle', e.target.value)}
               rows={4}
               placeholder="Escribe una breve descripción..."
@@ -72,15 +74,17 @@ export function ContactEditor({ data, onChange }: ContactEditorProps) {
 
         {/* DATOS DE CONTACTO */}
         <div className="space-y-4">
-          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest border-b pb-2">Información de Enlace</h3>
-          
+          <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest border-b pb-2">
+            Información de Enlace
+          </h3>
+
           <div className="space-y-3">
             <div>
               <Label className="flex items-center gap-2">
                 <MapPin className="h-3 w-3" /> Dirección Física
               </Label>
               <Input
-                value={content.address || ''}
+                value={content.address ?? ''}
                 onChange={(e) => updateContent('address', e.target.value)}
               />
             </div>
@@ -92,7 +96,7 @@ export function ContactEditor({ data, onChange }: ContactEditorProps) {
                 </Label>
                 <Input
                   type="email"
-                  value={content.email || ''}
+                  value={content.email ?? ''}
                   onChange={(e) => updateContent('email', e.target.value)}
                 />
               </div>
@@ -101,7 +105,7 @@ export function ContactEditor({ data, onChange }: ContactEditorProps) {
                   <Phone className="h-3 w-3" /> Teléfono
                 </Label>
                 <Input
-                  value={content.phone || ''}
+                  value={content.phone ?? ''}
                   onChange={(e) => updateContent('phone', e.target.value)}
                 />
               </div>
@@ -113,7 +117,7 @@ export function ContactEditor({ data, onChange }: ContactEditorProps) {
               </Label>
               <Input
                 className="border-green-200 focus-visible:ring-green-500 bg-green-50/30"
-                value={content.whatsappLink || ''}
+                value={content.whatsappLink ?? ''}
                 onChange={(e) => updateContent('whatsappLink', e.target.value)}
                 placeholder="https://wa.me/34..."
               />

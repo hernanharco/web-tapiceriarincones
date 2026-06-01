@@ -1,3 +1,29 @@
+// ============================================================
+// src/lib/types.ts — Re-exportaciones y tipos transversales
+// ============================================================
+
+export type {
+  HeroContent,
+  AboutContent,
+  ProjectItem,
+  ProjectsContent,
+  ClientItem,
+  ClientsContent,
+  ReviewItem,
+  ReviewsContent,
+  ContactContent,
+  SectionIdentifier,
+  SectionContentMap,
+  ContentFor,
+  SectionData,
+} from './content-types';
+
+export { DEFAULT_SECTION_CONTENT, extractContent } from './content-types';
+
+// ============================================================
+// Tipos legacy (mantenidos para compatibilidad)
+// ============================================================
+
 export type ImagePlaceholder = {
   id: string;
   description: string;

@@ -6,41 +6,37 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ImageUploader } from './ImageUploader';
 import { Info, ImageIcon } from 'lucide-react';
+import type { SectionData, AboutContent } from '@/lib/content-types';
 
 interface AboutEditorProps {
-  data: any;
-  onChange: (newData: any) => void;
+  data: SectionData<'about'>;
+  onChange: (newData: SectionData<'about'>) => void;
 }
 
 export function AboutEditor({ data, onChange }: AboutEditorProps) {
-  
-  // 1. Manejo del Título
+  const content: AboutContent = data.content ?? {};
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({
       ...data,
-      content: { ...data.content, title: e.target.value }
+      content: { ...content, title: e.target.value },
     });
   };
 
-  // 2. Manejo de Párrafos
   const handleParagraphsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange({
       ...data,
-      content: { 
-        ...data.content, 
-        paragraphs: e.target.value.split('\n').filter(p => p.trim() !== '') 
-      }
+      content: {
+        ...content,
+        paragraphs: e.target.value.split('\n').filter((p) => p.trim() !== ''),
+      },
     });
   };
 
-  // 3. Manejo de la Imagen
   const handleImageChange = (url: string) => {
     onChange({
       ...data,
-      content: { 
-        ...data.content, 
-        aboutImage: url 
-      }
+      content: { ...content, aboutImage: url },
     });
   };
 
@@ -60,7 +56,7 @@ export function AboutEditor({ data, onChange }: AboutEditorProps) {
           <Input
             id="aboutTitle"
             className="mt-1 bg-white"
-            value={data.content.title || ''}
+            value={content.title ?? ''}
             onChange={handleTitleChange}
           />
         </div>
@@ -73,7 +69,7 @@ export function AboutEditor({ data, onChange }: AboutEditorProps) {
           <Textarea
             id="paragraphs"
             className="mt-1 resize-none bg-white font-sans"
-            value={data.content.paragraphs?.join('\n') || ''}
+            value={content.paragraphs?.join('\n') ?? ''}
             onChange={handleParagraphsChange}
             rows={6}
           />
@@ -84,13 +80,13 @@ export function AboutEditor({ data, onChange }: AboutEditorProps) {
           <Label className="text-sm font-bold uppercase flex items-center gap-2 mb-3 text-primary">
             <ImageIcon className="h-4 w-4" /> Imagen de la Sección
           </Label>
-          
-          <ImageUploader 
+
+          <ImageUploader
             label="Foto del taller o equipo"
-            value={data.content.aboutImage || ''}
+            value={content.aboutImage ?? ''}
             onChange={handleImageChange}
           />
-          
+
           <p className="text-[10px] text-muted-foreground mt-2 uppercase tracking-tight italic text-center">
             * La imagen aparecerá automáticamente al guardar los cambios.
           </p>

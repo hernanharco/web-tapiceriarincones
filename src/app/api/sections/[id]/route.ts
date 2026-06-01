@@ -1,33 +1,32 @@
-export const revalidate = 0; // Deshabilita el cache para esta API
+export const revalidate = 0;
 
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Section from '@/lib/models/Section';
+import type { SectionIdentifier } from '@/lib/content-types';
 
-// Definimos la interfaz para los parámetros asíncronos de Next.js 15
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
 export async function GET(
-  request: NextRequest,
-  { params }: RouteParams
+  _request: NextRequest,
+  { params }: RouteParams,
 ) {
   try {
     await connectDB();
-    
-    // IMPORTANTE: En Next.js 15, params debe ser esperado con await
+
     const { id } = await params;
-    
-    const section = await Section.findOne({ 
-      identifier: id,
-      isActive: true 
-    });
+
+    const section = await Section.findOne({
+      identifier: id as SectionIdentifier,
+      isActive: true,
+    }).lean();
 
     if (!section) {
       return NextResponse.json(
         { error: 'Section not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -36,47 +35,40 @@ export async function GET(
     console.error('Error fetching section:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: RouteParams
+  { params }: RouteParams,
 ) {
   try {
     await connectDB();
-    
-    // Esperamos los parámetros
+
     const { id } = await params;
-    
     const body = await request.json();
     const { title, subtitle, content, isActive } = body;
 
-    // Actualizamos o creamos (upsert) la sección
     const section = await Section.findOneAndUpdate(
-      { identifier: id },
-      { 
-        title, 
-        subtitle, 
-        content, 
+      { identifier: id as SectionIdentifier },
+      {
+        title,
+        subtitle,
+        content,
         isActive: isActive !== undefined ? isActive : true,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
-      { 
-        new: true, 
-        upsert: true,
-        runValidators: true 
-      }
-    );
+      { new: true, upsert: true, runValidators: true },
+    ).lean();
 
     return NextResponse.json(section);
   } catch (error) {
     console.error('Error updating section:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

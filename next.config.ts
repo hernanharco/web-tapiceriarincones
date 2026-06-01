@@ -1,8 +1,9 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  typescript: { ignoreBuildErrors: true },
-  eslint: { ignoreDuringBuilds: true },
+  // Type safety y lint en build son obligatorios en un proyecto 10/10
+  // typescript: { ignoreBuildErrors: true },  // DESACTIVADO
+  // eslint: { ignoreDuringBuilds: true },     // DESACTIVADO
 
   async rewrites() {
     return [
