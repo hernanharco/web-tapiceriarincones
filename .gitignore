@@ -43,3 +43,6 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# No ignores el ejemplo si lo tienes (es útil para otros desarrolladores)
+!.env.example

@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { mapBackendRole } from '@/lib/roles';
 
 interface User {
   name: string;
@@ -21,29 +20,36 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || '/api/v1';
+
+  // REGLA DE ORO: Usamos la ruta relativa para que el Proxy de Next.js
+  // intercepte la petición, añada las cookies y la mande a Render.
+  const API_BASE = '/api/v1';
 
   const loadProfile = async () => {
+    setIsLoading(true);
     try {
-      // ← CAMBIO 1: /perfil → /users/me
-      const response = await fetch(`${BACKEND_URL}/users/me`, {
+      // Al usar path relativo, el navegador adjunta automáticamente 
+      // las cookies de localhost/vercel si SameSite está en 'none' o 'lax'.
+      const response = await fetch(`${API_BASE}/perfil`, {
         method: 'GET',
-        credentials: 'include',
+        // credentials: 'include' es vital para que las cookies viajen al backend de Render
+        credentials: 'include', 
       });
-
+      
       if (response.ok) {
-        // ← CAMBIO 2: FastAPI devuelve el usuario directamente, sin wrapper {success, user}
         const data = await response.json();
-        setUser({
-          name: data.full_name || data.username || data.email?.split('@')[0] || 'Usuario',
-          email: data.email || '',
-          // ← CAMBIO 3: mapear ADMIN → Admin para que RBAC funcione
-          role: mapBackendRole(data.role),
-        });
+        if (data.success && data.user) {
+          setUser({
+            name: data.user.name || data.user.email?.split('@')[0] || 'Usuario',
+            email: data.user.email || '',
+            role: data.user.role || 'Viewer'
+          });
+        }
       } else {
         setUser(null);
       }
     } catch (err) {
+      console.error("Error en sincronización de identidad:", err);
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -52,14 +58,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      // FastAPI usa POST /auth/logout
-      await fetch(`${BACKEND_URL}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
+      await fetch(`${API_BASE}/logout`, { 
+        method: 'POST', 
+        credentials: 'include' 
       });
       setUser(null);
+      // Opcional: Redirigir al Auth Center tras el logout
+      window.location.href = process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:3000';
     } catch (err) {
-      console.error('Logout error', err);
+      console.error('Error al cerrar sesión:', err);
     }
   };
 
