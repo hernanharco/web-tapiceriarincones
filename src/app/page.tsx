@@ -1,4 +1,6 @@
-export const dynamic = 'force-dynamic';
+// ISR 60s: las secciones se refrescan en background cada minuto
+// El admin también puede forzar revalidate desde /api/revalidate
+export const revalidate = 60;
 
 import { Hero } from '@/components/sections/hero';
 import { About } from '@/components/sections/about';

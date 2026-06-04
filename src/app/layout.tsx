@@ -14,9 +14,8 @@ export const metadata: Metadata = {
   description: 'El Arte de Restaurar Tus Muebles con Tradición.',
 };
 
-// Forzamos que no haya cacheo para que los cambios del admin se vean reflejados
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// ISR 1h para datos de contacto (cambian poco)
+export const revalidate = 3600;
 
 async function getContactSectionDirect() {
   try {
