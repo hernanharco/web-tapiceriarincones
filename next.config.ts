@@ -1,14 +1,6 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* 🛠️ Configuración de Compilación y Estilos */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-
   /* 🖼️ Gestión de Imágenes (Fidelidad Visual) */
   images: {
     dangerouslyAllowSVG: true, // Útil para logos de tapicería
