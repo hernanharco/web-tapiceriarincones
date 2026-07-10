@@ -1,9 +1,6 @@
-'use client';
-
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { useRevalidateOnSave } from '@/hooks/useRevalidateOnSave';
 import type { SectionData, AboutContent } from '@/lib/content-types';
 import { extractContent } from '@/lib/content-types';
 
@@ -39,7 +36,6 @@ interface AboutProps {
 }
 
 export function About({ data }: AboutProps) {
-  useRevalidateOnSave();
 
   const content: AboutContent = extractContent(data);
   const displayImage = content.aboutImage || teamImagePlaceholder?.imageUrl;

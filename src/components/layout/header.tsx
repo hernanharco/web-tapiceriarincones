@@ -85,6 +85,21 @@ export function Header({ globalWhatsapp, globalLogo }: HeaderProps) {
   };
 
   /**
+   * Carga diferida de Material Symbols (icon font) para no bloquear el render.
+   * Se inyecta via JS en vez de usar <link> en <head> server-renderizado.
+   */
+  useEffect(() => {
+    const linkId = 'material-symbols-stylesheet';
+    if (document.getElementById(linkId)) return;
+
+    const link = document.createElement('link');
+    link.id = linkId;
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=door_open';
+    document.head.appendChild(link);
+  }, []);
+
+  /**
    * Escuchar el postMessage que manda el callback de FastAPI.
    * Tu endpoint /api/v1/auth/callback ya devuelve HTML con postMessage.
    */

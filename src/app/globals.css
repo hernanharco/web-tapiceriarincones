@@ -75,3 +75,13 @@
     -o-box-shadow: 0 0 20px rgba(0,0,0,0.2);
     box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
+
+/* Marquee infinito para la sección de clientes (reemplaza framer-motion) */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 30s linear infinite;
+}

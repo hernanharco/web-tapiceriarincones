@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/carousel';
 import { Star } from 'lucide-react';
 import { ReviewModal } from '@/components/modals/ReviewModal';
-import { useRevalidateOnSave } from '@/hooks/useRevalidateOnSave';
 import type { SectionData, ReviewsContent, ReviewItem } from '@/lib/content-types';
 import { extractContent } from '@/lib/content-types';
 
@@ -20,7 +19,6 @@ interface ReviewsProps {
 }
 
 export function Reviews({ data }: ReviewsProps) {
-  useRevalidateOnSave();
 
   const content: ReviewsContent = extractContent(data);
 

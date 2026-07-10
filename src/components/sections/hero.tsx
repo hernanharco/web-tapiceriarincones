@@ -1,11 +1,8 @@
-'use client';
-
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Eye, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
-import { useRevalidateOnSave } from '@/hooks/useRevalidateOnSave';
 import type { SectionData, HeroContent } from '@/lib/content-types';
 import { extractContent } from '@/lib/content-types';
 
@@ -17,7 +14,6 @@ interface HeroProps {
 const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-background');
 
 export function Hero({ data, globalWhatsapp }: HeroProps) {
-  useRevalidateOnSave();
 
   const content: HeroContent = extractContent<'hero'>(
     data as SectionData<'hero'> | undefined | null,

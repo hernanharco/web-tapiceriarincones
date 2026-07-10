@@ -1,9 +1,5 @@
-'use client';
-
 import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { motion } from 'framer-motion';
-import { useRevalidateOnSave } from '@/hooks/useRevalidateOnSave';
 import type { SectionData, ClientsContent, ClientItem } from '@/lib/content-types';
 import { extractContent } from '@/lib/content-types';
 
@@ -12,11 +8,9 @@ interface ClientsProps {
 }
 
 export function Clients({ data }: ClientsProps) {
-  useRevalidateOnSave();
-
   const content: ClientsContent = extractContent(data);
   const clientsList: ClientItem[] = content.items ?? [];
-  const duplicatedClients = [...clientsList, ...clientsList, ...clientsList];
+  const duplicatedClients = [...clientsList, ...clientsList];
 
   return (
     <section id="clientes" className="bg-card py-20 overflow-hidden">
@@ -31,20 +25,8 @@ export function Clients({ data }: ClientsProps) {
 
       {clientsList.length > 0 ? (
         <div className="relative flex overflow-hidden py-10">
-          <motion.div
-            className="flex gap-8 px-4"
-            animate={{
-              x: [0, -100 * clientsList.length],
-            }}
-            transition={{
-              x: {
-                repeat: Infinity,
-                repeatType: 'loop',
-                duration: 30,
-                ease: 'linear',
-              },
-            }}
-            style={{ width: 'fit-content' }}
+          <div
+            className="flex gap-8 px-4 marquee-track"
           >
             {duplicatedClients.map((client, index) => (
               <div key={`${client.id}-${index}`} className="w-[350px] flex-shrink-0">
@@ -75,7 +57,7 @@ export function Clients({ data }: ClientsProps) {
                 </Card>
               </div>
             ))}
-          </motion.div>
+          </div>
 
           <div className="pointer-events-none absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-card to-transparent z-10" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-card to-transparent z-10" />

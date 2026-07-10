@@ -1,18 +1,23 @@
 'use client';
 
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { projects as staticProjects } from '@/lib/data/projects';
 import { BeforeAfterSlider } from '@/components/before-after-slider';
-import HTMLFlipBook from 'react-pageflip';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, MessageCircle, Sparkles } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import Image from 'next/image';
-import { useRevalidateOnSave } from '@/hooks/useRevalidateOnSave';
 import type { SectionData, ProjectsContent, ProjectItem } from '@/lib/content-types';
 import { extractContent } from '@/lib/content-types';
 
-const FlipBook = HTMLFlipBook as any;
+/**
+ * react-pageflip se carga LAZY — pesa ~30KB y solo se necesita
+ * si el usuario scrollea hasta proyectos y abre el catálogo.
+ */
+const FlipBook = dynamic(
+  () => import('react-pageflip').then((mod) => mod.default || mod),
+  { ssr: false },
+) as any;
 
 interface ProjectsProps {
   data?: SectionData<'projects'> | null;
@@ -20,7 +25,6 @@ interface ProjectsProps {
 }
 
 export function Projects({ data, globalWhatsapp }: ProjectsProps) {
-  useRevalidateOnSave();
 
   const content: ProjectsContent = extractContent(data);
 
@@ -41,7 +45,8 @@ export function Projects({ data, globalWhatsapp }: ProjectsProps) {
 
   const bookRef = useRef<any>(null);
 
-  const fireConfetti = () => {
+  const fireConfetti = useCallback(async () => {
+    const confetti = (await import('canvas-confetti')).default;
     const end = Date.now() + 3 * 1000;
     const colors = ['#a855f7', '#ffffff', '#000000'];
 
@@ -65,7 +70,7 @@ export function Projects({ data, globalWhatsapp }: ProjectsProps) {
         requestAnimationFrame(frame);
       }
     })();
-  };
+  }, []);
 
   const onFlip = useCallback(
     (e: any) => {

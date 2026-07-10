@@ -3,13 +3,12 @@
 import { useEffect } from 'react';
 
 /**
- * Hook que escucha el canal BroadcastChannel 'site_update'
+ * Hook de layout que escucha BroadcastChannel 'site_update'
  * y recarga la página cuando recibe 'refresh_home'.
- * Se usa en las secciones públicas para reflejar cambios del admin.
  *
- * Centraliza la lógica que estaba duplicada en todos los componentes de sección.
+ * Centralizado AQUÍ en vez de duplicado en cada sección.
  */
-export function useRevalidateOnSave() {
+export function BroadcastRefresh() {
   useEffect(() => {
     const channel = new BroadcastChannel('site_update');
 
@@ -26,4 +25,7 @@ export function useRevalidateOnSave() {
       channel.close();
     };
   }, []);
+
+  // Este componente no renderiza nada visible
+  return null;
 }

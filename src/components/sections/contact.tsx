@@ -1,9 +1,6 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/icons/whatsapp-icon';
-import { useRevalidateOnSave } from '@/hooks/useRevalidateOnSave';
 import type { SectionData, ContactContent } from '@/lib/content-types';
 import { extractContent } from '@/lib/content-types';
 
@@ -12,7 +9,6 @@ interface ContactProps {
 }
 
 export function Contact({ data }: ContactProps) {
-  useRevalidateOnSave();
 
   const content: ContactContent = extractContent(data);
 
